@@ -40,31 +40,33 @@ def process_collections():
     for col in collections:
         plex = get_plex_server()
         title = col.get("title")
-        collection_plex_id = col.get("plexId")  # Use plexId for the collection
-        media_items = col.get("media", [])  # Get the media items in the collection
+        collection_plex_id = col.get("plexId")
+        media_items = col.get("media", [])
+        delete_after_days = col.get("deleteAfterDays")  # Retrieve deleteAfterDays from the collection
 
         print(f"Processing collection: {title} ({collection_plex_id})")
 
         for media in media_items:
-            media_plex_id = media.get("plexId")  # Use plexId for media items
-
+            media_plex_id = media.get("plexId")
+            add_date = media.get("addDate")
+            
             try:
                 # Fetch media details from Plex API using plexId
                 media_details = plex.fetchItem(media_plex_id)
                 media_title = media_details.title
-                url = f"{PLEX_URL}/library/metadata/{media_plex_id}/thumb?X-Plex-Token={plex._token}"  # Construct the URL using media's plexId
+                url = f"{PLEX_URL}/library/metadata/{media_plex_id}/thumb?X-Plex-Token={plex._token}"
 
                 print(f"  Processing media: {media_title} ({media_plex_id})")
 
                 if TEST_MODE:
-                    image_path = TEMP_TEST_DIR / f"{media_plex_id}_original.png"  # Save as {media_plex_id}_original.png
+                    image_path = TEMP_TEST_DIR / f"{media_plex_id}_original.png"
                     edited_path = TEMP_TEST_DIR / f"{media_plex_id}_edited.png"
                 else:
-                    image_path = TEMP_DIR / f"{media_plex_id}_original.png"  # Save as {media_plex_id}_original.png
+                    image_path = TEMP_DIR / f"{media_plex_id}_original.png"
                     edited_path = TEMP_DIR / f"{media_plex_id}_edited.png"
 
-                download_image(url, image_path)  # Pass the Plex URL to download_image
-                add_leaving_soon_badge(image_path, edited_path)
+                download_image(url, image_path)
+                add_leaving_soon_badge(image_path, edited_path, add_date, delete_after_days)
 
                 if not TEST_MODE:
                     # TODO: Upload back to Plex using plex_updater

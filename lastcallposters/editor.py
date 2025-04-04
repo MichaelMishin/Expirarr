@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 import os
+from datetime import datetime, timedelta
 
 # Scaled environment variables
 TEXT_SCALE = float(os.getenv("TEXT_SCALE", 0.05))
@@ -11,11 +12,22 @@ VERTICAL_ALIGN = os.getenv("VERTICAL_ALIGN", "bottom").lower()
 HORIZONTAL_OFFSET_SCALE = float(os.getenv("HORIZONTAL_OFFSET_SCALE", 0.01))
 VERTICAL_OFFSET_SCALE = float(os.getenv("VERTICAL_OFFSET_SCALE", 0.01))
 
-def add_leaving_soon_badge(image_path: Path, output_path: Path) -> Path:
+def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, delete_after_days: int) -> Path:
     print(f"Editing image: {image_path}")
     with Image.open(image_path).convert("RGBA") as img:
-        draw = ImageDraw.Draw(img)
         width, height = img.size
+
+        # Create a transparent overlay
+        overlay = Image.new("RGBA", img.size, (255, 255, 255, 0))
+        draw = ImageDraw.Draw(overlay)
+
+        # Parse the new date format
+        add_date_obj = datetime.strptime(add_date, "%Y-%m-%dT%H:%M:%S.%fZ")
+        end_date = add_date_obj + timedelta(days=delete_after_days)
+        
+        # Format the date as "Aug 20 / Jan 3 / Feb 18" (remove leading zero manually)
+        end_date_str = end_date.strftime("%b %d").replace(" 0", " ")
+        print(f"End date for badge: {end_date_str}")
 
         # Scaled values
         font_size = int(height * TEXT_SCALE)
@@ -30,7 +42,7 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path) -> Path:
         except IOError:
             font = ImageFont.load_default()
 
-        text = "Leaving Soon"
+        text = f"Leaving {end_date_str}"
         bbox = draw.textbbox((0, 0), text, font=font)
         text_width = bbox[2] - bbox[0]
         text_height = bbox[3] - bbox[1]
@@ -55,12 +67,14 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path) -> Path:
             y_position = height - badge_height - vertical_offset
 
         badge_box = [(x_position, y_position), (x_position + badge_width, y_position + badge_height)]
-        draw.rounded_rectangle(badge_box, radius=corner_radius, fill=(255, 0, 0, 180))
+        draw.rounded_rectangle(badge_box, radius=corner_radius, fill=(255, 0, 0, 150))  # Semi-transparent red
 
         text_x = x_position + (badge_width - text_width) // 2
         text_y = y_position + (badge_height - text_height) // 2
         draw.text((text_x, text_y), text, font=font, fill=(255, 255, 255, 255))
 
-        img.save(output_path)
+        # Composite the overlay with the original image
+        combined = Image.alpha_composite(img, overlay)
+        combined.save(output_path)
         print(f"Edited image saved to: {output_path}")
         return output_path
