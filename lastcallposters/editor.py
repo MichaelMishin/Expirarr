@@ -24,9 +24,16 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, d
         # Parse the new date format
         add_date_obj = datetime.strptime(add_date, "%Y-%m-%dT%H:%M:%S.%fZ")
         end_date = add_date_obj + timedelta(days=delete_after_days)
-        
-        # Format the date as "Aug 20 / Jan 3 / Feb 18" (remove leading zero manually)
-        end_date_str = end_date.strftime("%b %d").replace(" 0", " ")
+
+        # Determine the suffix for the day
+        day = end_date.day
+        if 11 <= day <= 13:  # Special case for 11th, 12th, 13th
+            suffix = "th"
+        else:
+            suffix = {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+
+        # Format the date as "Aug 20th / Jan 3rd / Feb 18th"
+        end_date_str = end_date.strftime(f"%b {day}{suffix}")
         print(f"End date for badge: {end_date_str}")
 
         # Scaled values
