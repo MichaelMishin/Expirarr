@@ -14,9 +14,14 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path) -> Path:
         except IOError:
             font = ImageFont.load_default()  # Fallback to default font if .ttf isn't found
         
-        # Draw badge rectangle
+        # Draw badge rectangle with rounded corners
         badge_height = int(height * 0.1)
-        draw.rectangle([(0, height - badge_height), (width, height)], fill=(255, 0, 0, 180))
+        corner_radius = int(badge_height * 0.2)  # Adjust corner radius as needed
+        draw.rounded_rectangle(
+            [(0, height - badge_height), (width, height)],
+            radius=corner_radius,
+            fill=(255, 0, 0, 180)
+        )
 
         # Add text
         text = "Leaving Soon"
