@@ -6,6 +6,7 @@ from pathlib import Path
 from editor import add_leaving_soon_badge
 from downloader import download_image  # now imported from downloader.py
 from plex_updater import get_plex_server, upload_poster
+from ahti_the_janitor import load_processed_posters, save_processed_posters, get_maintainerr_collections
 
 def get_config():
     config_path = os.getenv("CONFIG_PATH", "./config/config.yaml")
@@ -24,25 +25,12 @@ TEMP_DIR.mkdir(parents=True, exist_ok=True)
 TEMP_TEST_DIR = TEMP_DIR / "test"
 TEMP_TEST_DIR.mkdir(parents=True, exist_ok=True)
 
-HEADERS = {
-    "Authorization": f"Bearer {MAINTAINERR_API_KEY}"
-}
-
-def get_collections_with_delete_timer():
-    url = f"{MAINTAINERR_URL}/api/collections"
-    response = requests.get(url, headers=HEADERS)
-    response.raise_for_status()
-    all_collections = response.json()
-
-    if TEST_MODE:
-        print("Maintainerr API response:")
-        print(all_collections)
-    
-    return [c for c in all_collections if c.get("deleteAfterDays")]
 
 def process_collections():
-    collections = get_collections_with_delete_timer()
+    collections = get_maintainerr_collections()
     plex = get_plex_server()
+    processed_posters = load_processed_posters()
+
     for col in collections:
         title = col.get("title")
         collection_plex_id = col.get("plexId")
@@ -53,6 +41,10 @@ def process_collections():
 
         for media in media_items:
             media_plex_id = media.get("plexId")
+            if str(media_plex_id) in processed_posters:
+                print(f"    Skipping already processed media: {media_plex_id}")
+                continue
+
             add_date = media.get("addDate")
             
             try:
@@ -75,7 +67,13 @@ def process_collections():
 
                 if not TEST_MODE:
                     upload_poster(media_details, edited_path)
-                    pass
+
+                # Mark as processed
+                processed_posters[str(media_plex_id)] = {
+                    "title": media_title,
+                    "collection": title,
+                }
+                save_processed_posters(processed_posters)
 
             except Exception as e:
                 print(f"    Failed processing media {media_plex_id}: {e}")
