@@ -4,13 +4,13 @@ import os
 from datetime import datetime, timedelta
 
 # Scaled environment variables
-TEXT_SCALE = float(os.getenv("TEXT_SCALE", 0.05))
-PADDING_SCALE = float(os.getenv("PADDING_SCALE", 0.015))
+TEXT_SCALE = float(os.getenv("TEXT_SCALE", 0.04))
+PADDING_SCALE = float(os.getenv("PADDING_SCALE", 0.02))
 CORNER_RADIUS_SCALE = float(os.getenv("CORNER_RADIUS_SCALE", 0.02))
 HORIZONTAL_ALIGN = os.getenv("HORIZONTAL_ALIGN", "left").lower()
 VERTICAL_ALIGN = os.getenv("VERTICAL_ALIGN", "bottom").lower()
-HORIZONTAL_OFFSET_SCALE = float(os.getenv("HORIZONTAL_OFFSET_SCALE", 0.01))
-VERTICAL_OFFSET_SCALE = float(os.getenv("VERTICAL_OFFSET_SCALE", 0.01))
+HORIZONTAL_OFFSET_SCALE = float(os.getenv("HORIZONTAL_OFFSET_SCALE", 0.015))
+VERTICAL_OFFSET_SCALE = float(os.getenv("VERTICAL_OFFSET_SCALE", 0.015))
 
 def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, delete_after_days: int) -> Path:
     print(f"Editing image: {image_path}")
