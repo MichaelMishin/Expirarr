@@ -36,10 +36,12 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, d
         horizontal_offset = int(height * HORIZONTAL_OFFSET_SCALE)
         vertical_offset = int(height * VERTICAL_OFFSET_SCALE)
 
-        # Set the font size
+        # Set the font size and load the AvenirNextLTPro-Bold font
+        font_path = "fonts/AvenirNextLTPro-Bold.ttf" 
         try:
-            font = ImageFont.truetype("arial.ttf", font_size)
+            font = ImageFont.truetype(font_path, font_size)
         except IOError:
+            print(f"Font not found at {font_path}. Falling back to default font.")
             font = ImageFont.load_default()
 
         text = f"Leaving {end_date_str}"
@@ -67,7 +69,7 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, d
             y_position = height - badge_height - vertical_offset
 
         badge_box = [(x_position, y_position), (x_position + badge_width, y_position + badge_height)]
-        draw.rounded_rectangle(badge_box, radius=corner_radius, fill=(255, 0, 0, 150))  # Semi-transparent red
+        draw.rounded_rectangle(badge_box, radius=corner_radius, fill=(255, 0, 0, 110))  # Semi-transparent red
 
         text_x = x_position + (badge_width - text_width) // 2
         text_y = y_position + (badge_height - text_height) // 2
