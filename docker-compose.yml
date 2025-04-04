@@ -2,8 +2,8 @@ version: "3.8"
 
 services:
   lastcallposters:
-    image: michaelmishin/last-call-posters:latest
-    container_name: last-call-posters
+    image: michaelmishin/expirarr:latest
+    container_name: expirarr
     volumes:
       - /tmp/config:/app/config
       - /tmp/data:/app/data

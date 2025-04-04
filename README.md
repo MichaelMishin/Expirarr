@@ -1,4 +1,4 @@
-# last-call-posters
+# Expirarr
 
 *Project inspired by *[Maintainerr Overlay Helperr](https://github.com/gssariev/maintainerr-overlay-helperr) recreated in Python 
 
