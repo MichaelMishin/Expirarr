@@ -4,7 +4,7 @@ import yaml
 import os
 
 def get_config():
-    config_path = os.getenv("CONFIG_PATH", "/app/config.yaml")
+    config_path = os.getenv("CONFIG_PATH", "./config/config.yaml")
     with open(config_path, "r") as config_file:
         return yaml.safe_load(config_file)
 

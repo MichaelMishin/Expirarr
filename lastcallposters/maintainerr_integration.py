@@ -8,7 +8,7 @@ from downloader import download_image  # now imported from downloader.py
 from plex_updater import get_plex_server
 
 def get_config():
-    config_path = os.getenv("CONFIG_PATH", "/app/config.yaml")
+    config_path = os.getenv("CONFIG_PATH", "./config/config.yaml")
     with open(config_path, "r") as config_file:
         return yaml.safe_load(config_file)
 
@@ -19,7 +19,7 @@ MAINTAINERR_URL = config["maintainerr"]["url"]
 MAINTAINERR_API_KEY = config["maintainerr"]["api_key"]
 TEST_MODE = config.get("test_mode", False)
 
-TEMP_DIR = Path("/tmp/lastcallposters")
+TEMP_DIR = Path("/app/data/posters")
 TEMP_DIR.mkdir(parents=True, exist_ok=True)
 TEMP_TEST_DIR = TEMP_DIR / "test"
 TEMP_TEST_DIR.mkdir(parents=True, exist_ok=True)

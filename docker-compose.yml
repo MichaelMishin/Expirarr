@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  lastcallposters:
+    image: michaelmishin/last-call-posters:latest
+    container_name: last-call-posters
+    volumes:
+      - /tmp/config:/app/config
+      - /tmp/data:/app/data
+    command: ["python", "-m", "lastcallposters.main"]
