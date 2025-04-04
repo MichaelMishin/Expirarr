@@ -7,18 +7,24 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path) -> Path:
         draw = ImageDraw.Draw(img)
         width, height = img.size
 
+        # Calculate font size as a percentage of image height (you can adjust the percentage as needed)
+        font_size = int(height * 0.05)  # 5% of image height
+        try:
+            font = ImageFont.truetype("arial.ttf", font_size)  # Use a scalable font (adjust path if needed)
+        except IOError:
+            font = ImageFont.load_default()  # Fallback to default font if .ttf isn't found
+        
         # Draw badge rectangle
         badge_height = int(height * 0.1)
         draw.rectangle([(0, height - badge_height), (width, height)], fill=(255, 0, 0, 180))
 
         # Add text
-        font = ImageFont.load_default()
         text = "Leaving Soon"
-        
         bbox = draw.textbbox((0, 0), text, font=font)
         text_width = bbox[2] - bbox[0]  # width = right - left
         text_height = bbox[3] - bbox[1]  # height = bottom - top
 
+        # Center the text inside the badge area
         text_position = ((width - text_width) // 2, height - badge_height + (badge_height - text_height) // 2)
         draw.text(text_position, text, font=font, fill=(255, 255, 255, 255))
 
