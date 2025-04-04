@@ -42,8 +42,8 @@ def get_collections_with_delete_timer():
 
 def process_collections():
     collections = get_collections_with_delete_timer()
+    plex = get_plex_server()
     for col in collections:
-        plex = get_plex_server()
         title = col.get("title")
         collection_plex_id = col.get("plexId")
         media_items = col.get("media", [])
@@ -75,6 +75,8 @@ def process_collections():
 
                 if not TEST_MODE:
                     # TODO: Upload back to Plex using plex_updater
+                    upload_poster(media_details, edited_path)
+                    print(f"  Uploading edited poster to Plex for: {media_title}")
                     pass
 
             except Exception as e:

@@ -11,7 +11,7 @@ COPY expirarr/ ./expirarr/
 COPY requirements.txt .
 
 # Copy the config file
-COPY config.yaml ./config/config.yaml
+COPY config/config.yaml ./config/config.yaml
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \

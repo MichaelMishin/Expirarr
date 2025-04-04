@@ -23,7 +23,7 @@ HORIZONTAL_OFFSET_SCALE = text_config["horizontal_offset_scale"]
 VERTICAL_OFFSET_SCALE = text_config["vertical_offset_scale"]
 
 def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, delete_after_days: int) -> Path:
-    print(f"Editing image: {image_path}")
+    print(f"    Editing image: {image_path}")
     with Image.open(image_path).convert("RGBA") as img:
         width, height = img.size
 
@@ -44,7 +44,7 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, d
 
         # Format the date as "Aug 20th / Jan 3rd / Feb 18th"
         end_date_str = end_date.strftime(f"%b {day}{suffix}")
-        print(f"End date for badge: {end_date_str}")
+        print(f"    End date for badge: {end_date_str}")
 
         # Scaled values
         font_size = int(height * TEXT_SCALE)
@@ -58,7 +58,7 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, d
         try:
             font = ImageFont.truetype(font_path, font_size)
         except IOError:
-            print(f"Font not found at {font_path}. Falling back to default font.")
+            print(f"    Font not found at {font_path}. Falling back to default font.")
             font = ImageFont.load_default()
 
         text = f"Leaving {end_date_str}"
@@ -95,5 +95,5 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, d
         # Composite the overlay with the original image
         combined = Image.alpha_composite(img, overlay)
         combined.save(output_path)
-        print(f"Edited image saved to: {output_path}")
+        print(f"    Edited image saved to: {output_path}")
         return output_path
