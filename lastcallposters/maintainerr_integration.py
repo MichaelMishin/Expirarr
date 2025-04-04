@@ -1,23 +1,28 @@
 import os
 import requests
+import yaml
 from dotenv import load_dotenv
 from pathlib import Path
 from editor import add_leaving_soon_badge
 from downloader import download_image  # now imported from downloader.py
 from plex_updater import get_plex_server
 
-# Load environment variables from .env file
-load_dotenv()
+def get_config():
+    config_path = os.getenv("CONFIG_PATH", "/app/config.yaml")
+    with open(config_path, "r") as config_file:
+        return yaml.safe_load(config_file)
 
-PLEX_URL = os.getenv("PLEX_URL")
-MAINTAINERR_URL = os.getenv("MAINTAINERR_URL")
-MAINTAINERR_API_KEY = os.getenv("MAINTAINERR_API_KEY")
-PLEX_TOKEN = os.getenv("PLEX_TOKEN")
+config = get_config()
+
+PLEX_URL = config["plex"]["url"]
+MAINTAINERR_URL = config["maintainerr"]["url"]
+MAINTAINERR_API_KEY = config["maintainerr"]["api_key"]
+TEST_MODE = config.get("test_mode", False)
+
 TEMP_DIR = Path("/tmp/lastcallposters")
 TEMP_DIR.mkdir(parents=True, exist_ok=True)
 TEMP_TEST_DIR = TEMP_DIR / "test"
 TEMP_TEST_DIR.mkdir(parents=True, exist_ok=True)
-TEST_MODE = os.getenv("TEST_MODE", "true").lower() == "true"
 
 HEADERS = {
     "Authorization": f"Bearer {MAINTAINERR_API_KEY}"

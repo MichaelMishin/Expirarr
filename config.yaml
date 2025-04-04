@@ -1,0 +1,23 @@
+# Required settings
+plex:
+  url: http://X.X.X.X:32400
+  token: your-token-here
+
+maintainerr:
+  url: http://X.X.X.X:6246
+  api_key: your-api-key-here
+
+
+# Optional settings
+test_mode: false
+
+badge_customization:
+  text_scale: 0.04
+  padding_scale: 0.02
+  corner_radius_scale: 0.02
+
+text_positioning:
+  horizontal_align: left
+  vertical_align: bottom
+  horizontal_offset_scale: 0.015
+  vertical_offset_scale: 0.015

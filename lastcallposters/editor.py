@@ -1,16 +1,26 @@
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
+import yaml
 import os
 from datetime import datetime, timedelta
 
-# Scaled environment variables
-TEXT_SCALE = float(os.getenv("TEXT_SCALE", 0.04))
-PADDING_SCALE = float(os.getenv("PADDING_SCALE", 0.02))
-CORNER_RADIUS_SCALE = float(os.getenv("CORNER_RADIUS_SCALE", 0.02))
-HORIZONTAL_ALIGN = os.getenv("HORIZONTAL_ALIGN", "left").lower()
-VERTICAL_ALIGN = os.getenv("VERTICAL_ALIGN", "bottom").lower()
-HORIZONTAL_OFFSET_SCALE = float(os.getenv("HORIZONTAL_OFFSET_SCALE", 0.015))
-VERTICAL_OFFSET_SCALE = float(os.getenv("VERTICAL_OFFSET_SCALE", 0.015))
+def get_config():
+    config_path = os.getenv("CONFIG_PATH", "/app/config.yaml")
+    with open(config_path, "r") as config_file:
+        return yaml.safe_load(config_file)
+
+config = get_config()
+
+badge_config = config["badge_customization"]
+text_config = config["text_positioning"]
+
+TEXT_SCALE = badge_config["text_scale"]
+PADDING_SCALE = badge_config["padding_scale"]
+CORNER_RADIUS_SCALE = badge_config["corner_radius_scale"]
+HORIZONTAL_ALIGN = text_config["horizontal_align"]
+VERTICAL_ALIGN = text_config["vertical_align"]
+HORIZONTAL_OFFSET_SCALE = text_config["horizontal_offset_scale"]
+VERTICAL_OFFSET_SCALE = text_config["vertical_offset_scale"]
 
 def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, delete_after_days: int) -> Path:
     print(f"Editing image: {image_path}")
