@@ -1,15 +1,15 @@
 # Required settings
 plex:
   url: http://X.X.X.X:32400
-  token: your-token-here
+  token: your_token_here
 
 maintainerr:
   url: http://X.X.X.X:6246
-  api_key: your-api-key-here
+  api_key: your_api_key_here
 
 
 # Optional settings
-test_mode: false
+test_mode: true
 
 badge_customization:
   text_scale: 0.04

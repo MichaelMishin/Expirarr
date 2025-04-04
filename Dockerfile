@@ -5,7 +5,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copy the application files
-COPY lastcallposters/ ./lastcallposters/
+COPY expirarr/ ./expirarr/
 
 # Copy the requirements file
 COPY requirements.txt .
@@ -24,4 +24,4 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir -r requirements.txt 
 
 # Command to run the script
-CMD ["python", "-m", "lastcallposters.main"]
+CMD ["python", "-m", "expirarr.main"]
