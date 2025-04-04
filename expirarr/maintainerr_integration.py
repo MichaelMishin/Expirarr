@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 from editor import add_leaving_soon_badge
 from downloader import download_image  # now imported from downloader.py
-from plex_updater import get_plex_server
+from plex_updater import get_plex_server, upload_poster
 
 def get_config():
     config_path = os.getenv("CONFIG_PATH", "./config/config.yaml")
@@ -74,9 +74,7 @@ def process_collections():
                 add_leaving_soon_badge(image_path, edited_path, add_date, delete_after_days)
 
                 if not TEST_MODE:
-                    # TODO: Upload back to Plex using plex_updater
                     upload_poster(media_details, edited_path)
-                    print(f"  Uploading edited poster to Plex for: {media_title}")
                     pass
 
             except Exception as e:

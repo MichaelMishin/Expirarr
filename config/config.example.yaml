@@ -9,7 +9,7 @@ maintainerr:
 
 
 # Optional settings
-test_mode: true
+test_mode: false # Set to true to run the script without applying changes to the Plex server. will save changes to a folder called test
 
 badge_customization:
   text_scale: 0.04
