@@ -1,6 +1,8 @@
 # last-call-posters
 
-A Python app to automatically update Plex posters with a "Leaving Soon" badge for shows about to be removed.
+*Project inspired by *[Maintainerr Overlay Helperr](https://github.com/gssariev/maintainerr-overlay-helperr) recreated in Python 
+
+A Python app to automatically update Plex posters with a "Leaving Soon" badge for shows about to be removed based on [Maintainerr](https://github.com/jorenn92/Maintainerr).
 
 ## Features
 - Sync with Plex using `plexapi`
