@@ -1,0 +1,4 @@
+requests
+Pillow
+plexapi
+python-dotenv
