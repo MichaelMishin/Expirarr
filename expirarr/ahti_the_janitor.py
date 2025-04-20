@@ -51,30 +51,38 @@ def get_maintainerr_collections():
     url = f"{MAINTAINERR_URL}/api/collections"
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
-    all_collections = response.json()
+    collections = response.json()
+    return collections  # Return the full collection data instead of just plexId values
 
-    if TEST_MODE:
-        print("Maintainerr API response:")
-        print(all_collections)
-    
-    return [c for c in all_collections if c.get("deleteAfterDays")]
-
-def validate_processed_data():
+def reset_processed_data():
     """
-    Updates the processed.json file by removing entries not in the Maintainerr collections.
+    Updates the processed.json file by removing entries not in the Maintainerr collections (already removed from the system).
     """
-    processed_posters = load_processed_posters()
-    maintainerr_collections = get_maintainerr_collections()
+    if PROCESSED_FILE.exists():
+        print(f"Checking processed data file: {PROCESSED_FILE}")
+        with PROCESSED_FILE.open("r") as file:
+            try:
+                processed_data = json.load(file)
+            except json.JSONDecodeError:
+                print("Processed data file is not a valid JSON. Resetting...")
+                processed_data = {}
 
-    # Remove entries not in Maintainerr collections
-    updated_processed = {k: v for k, v in processed_posters.items() if k in maintainerr_collections}
-    
-    # Save the updated processed data
-    save_processed_posters(updated_processed)
+        maintainerr_collections = get_maintainerr_collections()
+        maintainerr_media_ids = {
+            str(item["plexId"]) for collection in maintainerr_collections for item in collection.get("media", [])
+        }
+        updated_data = {
+            key: value for key, value in processed_data.items() if key in maintainerr_media_ids
+        }
 
+        with PROCESSED_FILE.open("w") as file:
+            json.dump(updated_data, file, indent=4)
+        print(f"Updated processed data file: {PROCESSED_FILE}")
+    else:
+        print(f"No processed data file found at: {PROCESSED_FILE}")
 
 if __name__ == "__main__":
     print("Running cleanup tasks...")
     cleanup_temp_files()
-    validate_processed_data()
+    reset_processed_data()
     print("Cleanup completed.")
