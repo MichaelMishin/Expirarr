@@ -94,6 +94,11 @@ def add_leaving_soon_badge(image_path: Path, output_path: Path, add_date: str, d
 
         # Composite the overlay with the original image
         combined = Image.alpha_composite(img, overlay)
-        combined.save(output_path)
+
+        # Convert to RGB mode for saving as JPEG
+        combined = combined.convert("RGB")
+
+        # Save the image with optimized quality
+        combined.save(output_path, format="JPEG", quality=85)
         print(f"    Edited image saved to: {output_path}")
         return output_path
