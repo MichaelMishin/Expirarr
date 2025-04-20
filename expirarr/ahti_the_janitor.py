@@ -36,13 +36,18 @@ def save_processed_posters(processed):
 
 def cleanup_temp_files():
     """
-    Deletes all files in the temporary posters directory.
+    Deletes all files in the temporary posters directory and its test subdirectory.
     """
     if TEMP_DIR.exists():
         for file in TEMP_DIR.iterdir():
             if file.is_file():
                 print(f"Deleting temporary file: {file}")
                 file.unlink()
+            elif file.is_dir() and file.name == "test":
+                for test_file in file.iterdir():
+                    if test_file.is_file():
+                        print(f"Deleting test file: {test_file}")
+                        test_file.unlink()
 
 def get_maintainerr_collections():
     """
