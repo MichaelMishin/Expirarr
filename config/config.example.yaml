@@ -11,6 +11,8 @@ maintainerr:
 # Optional settings
 test_mode: false # Set to true to run the script without applying changes to the Plex server. will save changes to a folder called test
 
+cron_schedule: "0 0-23/12 * * *" # Default cron schedule to run every 12 hours
+
 badge_customization:
   text_scale: 0.04
   padding_scale: 0.02
