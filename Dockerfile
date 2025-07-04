@@ -11,7 +11,15 @@ COPY expirarr/ ./expirarr/
 COPY requirements.txt .
 
 # Copy the config file
-COPY config/config.yaml ./config/config.yaml
+COPY config/config.example.yaml ./config/config.yaml
+COPY config/config.example.yaml ./expirarr/config.example.yaml
+
+# Copy the entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Copy the fonts folder
+COPY fonts/ ./fonts/
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -23,5 +31,9 @@ RUN apt-get update && apt-get install -y \
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt 
 
+# Set environment variable for unbuffered Python output
+ENV PYTHONUNBUFFERED=1
+
 # Command to run the script
-CMD ["python", "-m", "expirarr.main"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["python", "-u", "-m", "expirarr.main"]
