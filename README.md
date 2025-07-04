@@ -4,6 +4,8 @@
 
 A Python app to automatically update Plex posters with a "Leaving Soon" badge for shows about to be removed based on [Maintainerr](https://github.com/jorenn92/Maintainerr).
 
+![Expirarr Showcase](https://github.com/MichaelMishin/Expirarr/blob/main/images/showcase.png)
+
 ## Features
 - Sync with Plex using `plexapi`
 - detects last date from Maintainerr collections "deleteAfterDays" 
