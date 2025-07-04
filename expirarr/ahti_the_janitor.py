@@ -2,6 +2,7 @@ import os
 import json
 import requests
 import yaml
+import re
 from pathlib import Path
 
 def get_config():
@@ -85,6 +86,54 @@ def reset_processed_data():
         print(f"Updated processed data file: {PROCESSED_FILE}")
     else:
         print(f"No processed data file found at: {PROCESSED_FILE}")
+
+def validate_config(config):
+    """
+    Validates the config file for required fields and correct URL/token formats.
+    Returns True if valid, False otherwise.
+    """
+    errors = []
+
+    # Check Plex config
+    plex = config.get("plex", {})
+    plex_url = plex.get("url", "")
+    plex_token = plex.get("token", "")
+
+    # Simple URL validation
+    url_pattern = re.compile(r"^https?://[^\s/$.?#].[^\s]*$")
+    if not plex_url or not url_pattern.match(plex_url):
+        errors.append("Invalid or missing Plex URL.")
+
+    # check for a valid IP address in the URL (example http://192.168.0.1:32400)
+    ip_pattern = re.compile(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b")
+    if not ip_pattern.search(plex_url): 
+        errors.append("Plex URL should contain a valid IP address.")
+
+    if not plex_token or plex_token == "your_token_here":
+        errors.append("Missing or placeholder Plex token.")
+
+    # Check Maintainerr config
+    maintainerr = config.get("maintainerr", {})
+    maintainerr_url = maintainerr.get("url", "")
+    maintainerr_api_key = maintainerr.get("api_key", "")
+
+    if not maintainerr_url or not url_pattern.match(maintainerr_url):
+        errors.append("Invalid or missing Maintainerr URL.")
+
+    if not ip_pattern.search(maintainerr_url):
+        errors.append("Maintainerr URL should contain a valid IP address.")
+
+    if not maintainerr_api_key or maintainerr_api_key == "your_api_key_here":
+        errors.append("Missing or placeholder Maintainerr API key.")
+
+    if errors:
+        print("Config validation errors:")
+        for err in errors:
+            print(f"  - {err}")
+        return False
+
+    print("Config file validated successfully.")
+    return True
 
 if __name__ == "__main__":
     print("Running cleanup tasks...")
