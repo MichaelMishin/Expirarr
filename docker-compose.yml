@@ -4,6 +4,7 @@ services:
   expirarr:
     image: michaelmishin/expirarr:latest
     container_name: expirarr
+    working_dir: /app
     volumes:
       - /tmp/config:/app/config
       - /tmp/data:/app/data
